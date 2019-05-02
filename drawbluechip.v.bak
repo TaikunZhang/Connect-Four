@@ -1,0 +1,88 @@
+`timescale 1ns/1ns
+module draw(
+input clk,resetn,resetb,
+input [7:0] xin,
+input [6:0] yin,
+input [2:0] colourin,
+input en_cycle,draw,
+
+output  [7:0] xout,
+output  [6:0] yout,
+output  [2:0] colourout,
+output reg [8:0] cycle);
+
+reg [7:0] counter;
+reg [7:0] yloc;
+reg [6:0] xloc;
+
+
+always@(posedge clk)begin
+		if (!resetn)
+			begin
+				xloc<=8'b0;
+				yloc<=7'b0;
+				counter<=8'b0;
+				end
+		else if (draw)begin
+				 xloc <= xin;
+				 yloc <= yin;
+				 counter<=counter+1;
+		end
+	//reset to black
+		/*else if (resetb)begin
+				begin
+				xout<=0;
+				yout<=0;
+				yloc<=0;
+				xloc<=0;
+				counter<=0;
+				colourout<=3'b0;
+				end
+					if(counter[3:0]==4'b1111 && counter[7:4]==4'b1111)
+						begin
+							xloc<= 0;
+							yloc<= 0;
+							xout <= 0;
+							yout<= 0;
+							counter<=0;
+						end
+					else
+						begin
+							if(xloc ==  8'b10011111) 
+								begin
+									if(!(yloc == 7'b1110111 && xloc == 8'b10011111))
+										begin
+											xout<= 0;
+											xloc <= 0;
+										end
+									if(yloc < 7'b1110111)
+										begin
+											yloc = yloc + 1'b1;
+											yout <= yout + 1'b1;
+										end
+								end
+							else if(yout <= 7'b1110111 && xout < 8'b10011111)
+								begin
+									xout <= xout + 1'b1;
+									xloc <= xloc + 1'b1;
+								end
+						end	
+				end
+*/
+end
+			
+assign xout=xloc+counter[3:0];
+assign yout=yloc+counter[7:4];
+assign colourout=colourin;
+
+
+always@(posedge clk)begin
+		if (!resetn | resetb==1'b1)
+			cycle<=9'b0;
+		else if (en_cycle==1'b1)
+			cycle<=cycle+1;
+	end
+	
+
+endmodule
+	
